@@ -1,0 +1,179 @@
+-- DROP SCHEMA "schema";
+
+CREATE SCHEMA "schema" AUTHORIZATION user11037;
+
+-- DROP SEQUENCE "schema"."Employee1_seq";
+
+CREATE SEQUENCE "schema"."Employee1_seq"
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START 1
+	CACHE 1
+	NO CYCLE;
+-- DROP SEQUENCE "schema"."Employeee_seq";
+
+CREATE SEQUENCE "schema"."Employeee_seq"
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START 1
+	CACHE 1
+	NO CYCLE;
+-- DROP SEQUENCE "schema".role_seq;
+
+CREATE SEQUENCE "schema".role_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START 1
+	CACHE 1
+	NO CYCLE;
+-- DROP SEQUENCE "schema".solouser_seq;
+
+CREATE SEQUENCE "schema".solouser_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START 1
+	CACHE 1
+	NO CYCLE;
+-- DROP SEQUENCE "schema".teamuser_seq;
+
+CREATE SEQUENCE "schema".teamuser_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START 1
+	CACHE 1
+	NO CYCLE;-- "schema"."Visitor" определение
+
+-- Drop table
+
+-- DROP TABLE "schema"."Visitor";
+
+CREATE TABLE "schema"."Visitor" (
+	id_visitor int4 DEFAULT nextval('schema.solouser_seq'::regclass) NOT NULL,
+	usersurname varchar(100) NOT NULL,
+	username varchar(100) NOT NULL,
+	userpatronymic varchar(100) NOT NULL,
+	dateofbirth varchar(100) NOT NULL,
+	phone varchar NULL,
+	seriya_passp varchar NULL,
+	nom_passp varchar NULL,
+	organization varchar NULL,
+	primechanie varchar NULL,
+	file_other_visitors varchar NULL,
+	CONSTRAINT "SoloUser_pkey" PRIMARY KEY (id_visitor)
+);
+
+
+-- "schema".emplyee определение
+
+-- Drop table
+
+-- DROP TABLE "schema".emplyee;
+
+CREATE TABLE "schema".emplyee (
+	employeecode int4 NOT NULL,
+	employee varchar(100) NOT NULL,
+	CONSTRAINT emplyee_pkey PRIMARY KEY (employeecode)
+);
+
+
+-- "schema".purpose определение
+
+-- Drop table
+
+-- DROP TABLE "schema".purpose;
+
+CREATE TABLE "schema".purpose (
+	id_purpose int4 NOT NULL,
+	purpose varchar NULL,
+	CONSTRAINT purpose_pk PRIMARY KEY (id_purpose)
+);
+
+
+-- "schema"."role" определение
+
+-- Drop table
+
+-- DROP TABLE "schema"."role";
+
+CREATE TABLE "schema"."role" (
+	id_role int4 NOT NULL,
+	"role" varchar(100) NOT NULL,
+	CONSTRAINT role_pkey PRIMARY KEY (id_role)
+);
+
+
+-- "schema".status определение
+
+-- Drop table
+
+-- DROP TABLE "schema".status;
+
+CREATE TABLE "schema".status (
+	id_status int4 NOT NULL,
+	status varchar NULL,
+	CONSTRAINT status_pk PRIMARY KEY (id_status)
+);
+
+
+-- "schema"."Employee1" определение
+
+-- Drop table
+
+-- DROP TABLE "schema"."Employee1";
+
+CREATE TABLE "schema"."Employee1" (
+	userid int4 NOT NULL,
+	usersurname varchar(100) NOT NULL,
+	username varchar(100) NOT NULL,
+	userpatronymic varchar(100) NOT NULL,
+	department varchar(100) NOT NULL,
+	employee_code int4 NOT NULL,
+	CONSTRAINT "Employee1_pkey" PRIMARY KEY (userid),
+	CONSTRAINT employee1_emplyee_fk FOREIGN KEY (employee_code) REFERENCES "schema".emplyee(employeecode)
+);
+
+
+-- "schema"."user" определение
+
+-- Drop table
+
+-- DROP TABLE "schema"."user";
+
+CREATE TABLE "schema"."user" (
+	id_user int4 NOT NULL,
+	mail varchar NULL,
+	login varchar NULL,
+	passwd varchar NULL,
+	id_role int4 NULL,
+	CONSTRAINT user_pk PRIMARY KEY (id_user),
+	CONSTRAINT user_role_fk FOREIGN KEY (id_role) REFERENCES "schema"."role"(id_role)
+);
+
+
+-- "schema"."order" определение
+
+-- Drop table
+
+-- DROP TABLE "schema"."order";
+
+CREATE TABLE "schema"."order" (
+	id_order int4 NOT NULL,
+	id_user int4 NOT NULL,
+	date_nach date NULL,
+	date_end date NULL,
+	id_purpose int4 NULL,
+	id_status int4 NULL,
+	id_employee int4 NULL,
+	id_visitor int4 NULL,
+	CONSTRAINT order_pk PRIMARY KEY (id_order),
+	CONSTRAINT order_employee1_fk FOREIGN KEY (id_employee) REFERENCES "schema"."Employee1"(userid),
+	CONSTRAINT order_purpose_fk FOREIGN KEY (id_purpose) REFERENCES "schema".purpose(id_purpose),
+	CONSTRAINT order_status_fk FOREIGN KEY (id_status) REFERENCES "schema".status(id_status),
+	CONSTRAINT order_user_fk FOREIGN KEY (id_user) REFERENCES "schema"."user"(id_user),
+	CONSTRAINT order_visitor_fk FOREIGN KEY (id_visitor) REFERENCES "schema"."Visitor"(id_visitor)
+);
